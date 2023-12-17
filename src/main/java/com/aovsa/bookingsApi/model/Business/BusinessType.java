@@ -1,5 +1,7 @@
 package com.aovsa.bookingsApi.model.Business;
 
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBDocument;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import lombok.Getter;
 
@@ -15,12 +17,14 @@ import lombok.Getter;
  * @since 12-12-2023
  */
 @Getter
+@DynamoDBDocument
 public enum BusinessType {
 
     OTHER("Other"),
     RESTAURANT("Restaurant"),
     SALON("Salon");
 
+    @DynamoDBAttribute
     private final String businessType;
     BusinessType(String businessType) {
         this.businessType = businessType;
