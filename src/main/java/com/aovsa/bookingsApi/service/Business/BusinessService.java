@@ -40,7 +40,7 @@ public class BusinessService {
         BusinessModel model = new BusinessModel();
 
         model.setBusinessName(request.getBusinessName());
-        model.setBusinessType(request.getBusinessType());
+//        model.setBusinessType(request.getBusinessType());
         model.setDescription(request.getDescription());
         model.setAddress(request.getAddress());
 
