@@ -11,6 +11,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Service
 public class BusinessService {
@@ -22,22 +25,25 @@ public class BusinessService {
     }
 
     public List<BusinessModel> getBusiness() {
-        return businessRepository.findAll();
+        return StreamSupport
+                .stream(businessRepository.findAll().spliterator(), false)
+                .collect(Collectors.toList());
     }
 
-    public Optional<BusinessModel> getBusinessById(String id) {
+    public BusinessModel getBusinessById(String id) {
         return businessRepository.findById(id);
     }
 
     public BaseResponse createBusiness(CreateBusinessRequest request) {
         BusinessModel model = new BusinessModel();
 
+        model.setId(UUID.randomUUID().toString());
         model.setBusinessName(request.getBusinessName());
         model.setBusinessType(request.getBusinessType());
         model.setDescription(request.getDescription());
         model.setAddress(request.getAddress());
 
-        businessRepository.insert(model);
+        businessRepository.save(model);
 
         BaseResponse response = new BaseResponse();
         response.setStatus(HttpStatus.CREATED);

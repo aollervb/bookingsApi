@@ -1,11 +1,9 @@
 package com.aovsa.bookingsApi.model.Business;
 
-import lombok.Data;
-import lombok.Getter;
 import lombok.Setter;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.Transient;
-import org.springframework.data.mongodb.core.mapping.Document;
+import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbAttribute;
+import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
+import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbPartitionKey;
 
 /**
  * Model class to represent a business. <br>
@@ -20,17 +18,32 @@ import org.springframework.data.mongodb.core.mapping.Document;
  * @version 1.0
  * @since 12-12-2023
  */
-@Getter
 @Setter
-@Document("businessTable")
+@DynamoDbBean
 public class BusinessModel {
-    @Transient
-    public static final String SEQUENCE_NAME = "business_sequence";
-
-    @Id
     private String id;
     private String businessName;
     private BusinessType businessType;
     private String description;
     private String address;
+
+    @DynamoDbPartitionKey
+    @DynamoDbAttribute("id")
+    public String getId() {
+        return id;
+    }
+    @DynamoDbAttribute("businessName")
+    public String getBusinessName() {
+        return businessName;
+    }
+    @DynamoDbAttribute("businessType")
+    public BusinessType getBusinessType() {return businessType;}
+    @DynamoDbAttribute("description")
+    public String getDescription() {
+        return description;
+    }
+    @DynamoDbAttribute("address")
+    public String getAddress() {
+        return address;
+    }
 }
