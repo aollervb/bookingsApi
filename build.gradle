@@ -22,18 +22,23 @@ repositories {
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation group: 'org.json', name: 'json', version: '20231013'
-	implementation group: 'com.amazonaws', name: 'aws-java-sdk-dynamodb', version: '1.11.64'
+	// DynamoDB
+	implementation(platform("software.amazon.awssdk:bom:2.22.2"))
+	implementation("software.amazon.awssdk:dynamodb-enhanced")
 	implementation group: 'com.github.derjust', name: 'spring-data-dynamodb', version: '5.1.0'
 	implementation group: 'org.modelmapper', name: 'modelmapper', version: '2.1.1'
+	implementation group: 'io.awspring.cloud', name: 'spring-cloud-aws-dynamodb', version: '3.1.0'
 
-
+	//Spring Security
+	implementation "org.springframework.boot:spring-boot-starter-security"
+	//Springboot WEB
+	implementation 'org.springframework.boot:spring-boot-starter-data-rest'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	// LOMBOK
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
+	//TEST
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
-	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
 }
 
 tasks.named('test') {
