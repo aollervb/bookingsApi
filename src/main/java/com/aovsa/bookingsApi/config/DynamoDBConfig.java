@@ -1,18 +1,18 @@
 package com.aovsa.bookingsApi.config;
 
-import com.amazonaws.auth.AWSCredentials;
-import com.amazonaws.auth.BasicAWSCredentials;
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
-import org.socialsignin.spring.data.dynamodb.repository.config.EnableDynamoDBRepositories;
+import com.amazonaws.client.builder.AwsClientBuilder;
+import io.awspring.cloud.dynamodb.DynamoDbTemplate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.util.StringUtils;
+import software.amazon.awssdk.auth.credentials.ProfileCredentialsProvider;
+import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient;
+import software.amazon.awssdk.regions.Region;
+import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
+
+import java.net.URI;
 
 @Configuration
-@EnableDynamoDBRepositories
-        (basePackages = "com.aovsa.bookingsApi.repository")
 public class DynamoDBConfig {
 
     @Value("${amazon.dynamodb.endpoint}")
@@ -25,20 +25,23 @@ public class DynamoDBConfig {
     private String amazonAWSSecretKey;
 
     @Bean
-    public AmazonDynamoDB amazonDynamoDB() {
-        AmazonDynamoDB amazonDynamoDB
-                = new AmazonDynamoDBClient(amazonAWSCredentials());
-
-        if (!StringUtils.isEmpty(amazonDynamoDBEndpoint)) {
-            amazonDynamoDB.setEndpoint(amazonDynamoDBEndpoint);
-        }
-
-        return amazonDynamoDB;
+    public DynamoDbClient getDynamoDbClient() {
+        return DynamoDbClient.builder()
+                .credentialsProvider(ProfileCredentialsProvider.create())
+                .endpointOverride(URI.create(amazonDynamoDBEndpoint))
+                .region(Region.US_WEST_2)
+                .build();
     }
 
     @Bean
-    public AWSCredentials amazonAWSCredentials() {
-        return new BasicAWSCredentials(
-                amazonAWSAccessKey, amazonAWSSecretKey);
+    public DynamoDbEnhancedClient getDynamoDbEnhancedClient() {
+        return DynamoDbEnhancedClient.builder()
+                .dynamoDbClient(getDynamoDbClient())
+                .build();
+    }
+
+    @Bean
+    public DynamoDbTemplate dynamoDbTemplate() {
+        return new DynamoDbTemplate(getDynamoDbEnhancedClient());
     }
 }

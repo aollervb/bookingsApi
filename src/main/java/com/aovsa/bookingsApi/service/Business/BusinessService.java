@@ -1,8 +1,5 @@
 package com.aovsa.bookingsApi.service.Business;
 
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
-import com.aovsa.bookingsApi.config.DynamoDBConfig;
 import com.aovsa.bookingsApi.dto.Business.BusinessDTO;
 import com.aovsa.bookingsApi.model.Business.BusinessModel;
 import com.aovsa.bookingsApi.repository.Business.BusinessRepository;
@@ -14,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -21,7 +19,7 @@ import java.util.stream.StreamSupport;
 public class BusinessService {
     private final BusinessRepository businessRepository;
     private final ModelMapper mapper;
-    public BusinessService (BusinessRepository businessRepository, ModelMapper mapper, DynamoDBConfig dynamoDBConfig) {
+    public BusinessService (BusinessRepository businessRepository, ModelMapper mapper) {
         this.businessRepository = businessRepository;
         this.mapper = mapper;
     }
@@ -32,15 +30,16 @@ public class BusinessService {
                 .collect(Collectors.toList());
     }
 
-    public Optional<BusinessModel> getBusinessById(String id) {
+    public BusinessModel getBusinessById(String id) {
         return businessRepository.findById(id);
     }
 
     public BaseResponse createBusiness(CreateBusinessRequest request) {
         BusinessModel model = new BusinessModel();
 
+        model.setId(UUID.randomUUID().toString());
         model.setBusinessName(request.getBusinessName());
-//        model.setBusinessType(request.getBusinessType());
+        model.setBusinessType(request.getBusinessType());
         model.setDescription(request.getDescription());
         model.setAddress(request.getAddress());
 
